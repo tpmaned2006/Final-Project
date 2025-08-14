@@ -7,14 +7,6 @@
 
 using namespace std;
 
-
-
-
-
-   
-
-
-
 // Transaction structure to hold each record
 struct Transaction {
     int id;
@@ -22,6 +14,27 @@ struct Transaction {
     string category; // e.g., Food, Travel, Shopping
     string description;
     double amount;
+};
+
+class AnalyticsSummary {
+private:
+    std::vector<Transaction> transactions;
+public:
+    AnalyticsSummary(const std::vector<Transaction> &txns) : transactions(txns) {}
+
+    void generateSummary() {
+        double totalIncome = 0, totalExpense = 0;
+        for (const auto &txn : transactions) {
+            if (txn.amount >= 0) totalIncome += txn.amount;
+            else totalExpense += txn.amount;
+        }
+
+        std::cout << "\n=== Analytics Summary ===\n";
+        std::cout << "Total Income : " << totalIncome << "\n";
+        std::cout << "Total Expense: " << totalExpense << "\n";
+        std::cout << "Net Balance  : " << (totalIncome + totalExpense) << "\n";
+        std::cout << "=========================\n";
+    }
 };
 
 // Ledger class to manage all transactions
@@ -106,6 +119,37 @@ public:
         cout << "❌ Transaction with ID " << id << " not found.\n";
     }
 
+    void showAnalyticsSummary();
+
+    void showAdvancedAnalytics();
+    void Ledger::showAdvancedAnalytics() {
+    // Example: Monthly total, highest expense category, etc.
+    map<string, double> categoryTotals;
+    double totalSpent = 0;
+    double highestExpense = 0;
+    string highestCategory;
+
+    for (auto &transaction : transactions) {
+        categoryTotals[transaction.category] += transaction.amount;
+        totalSpent += transaction.amount;
+
+        if (categoryTotals[transaction.category] > highestExpense) {
+            highestExpense = categoryTotals[transaction.category];
+            highestCategory = transaction.category;
+        }
+    }
+
+    cout << "\n===== Advanced Analytics =====\n";
+    cout << "Total spent: " << totalSpent << "\n";
+    cout << "Highest spending category: " << highestCategory 
+         << " (" << highestExpense << ")\n";
+    cout << "Spending by category:\n";
+    for (auto &entry : categoryTotals) {
+        cout << " - " << entry.first << ": " << entry.second << "\n";
+    }
+    cout << "=============================\n";
+}
+
 private:
     void saveToFile() {
         ofstream out(filename);
@@ -152,7 +196,9 @@ void showMenu() {
     cout << "2. View All Transactions\n";
     cout << "3. Search Transaction\n";
     cout << "4. Delete Transaction\n";
-    cout << "5. Exit\n";
+    cout << "5. Analytics Summary\n";
+    cout << "6. Show Advanced Analytics\n";
+    cout << "7. Exit\n";
     cout << "===========================\n";
     cout << "Enter choice: ";
 }
@@ -197,15 +243,16 @@ int main() {
             ledger.deleteTransaction(id);
         }
         else if (choice == 5) {
-            cout << "💾 Exiting LedgerLite. Goodbye!\n";
+            ledger.showAnalyticsSummary();
+        }
+        else if (choice == 6) {
+            ledger.showAdvancedAnalytics(); 
         }
         else {
-            cout << "❌ Invalid choice. Try again.\n";
-        }
+	    cout << "Invalid choice. Try again.\n";
 
-    } while (choice != 5);
+    } while (choice != 7);
 
     return 0;
 }
-
 
