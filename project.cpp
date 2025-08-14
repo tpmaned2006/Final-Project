@@ -208,4 +208,45 @@ int main() {
     return 0;
 }
 
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Structure for storing expense data
+struct Expense {
+    string category;
+    double amount;
+};
+
+// Function to generate report
+void generateReport(const vector<Expense>& expenses) {
+    cout << "\n==================== Expense Report ====================\n";
+    cout << left << setw(20) << "Category" 
+         << right << setw(15) << "Amount" << "\n";
+    cout << "--------------------------------------------------------\n";
+
+    double total = 0.0;
+    for (const auto& exp : expenses) {
+        cout << left << setw(20) << exp.category
+             << right << setw(15) << fixed << setprecision(2) << exp.amount << "\n";
+        total += exp.amount;
+    }
+
+    cout << "--------------------------------------------------------\n";
+    cout << left << setw(20) << "Total"
+         << right << setw(15) << fixed << setprecision(2) << total << "\n";
+    cout << "========================================================\n";
+}
+int main() {
+    vector<Expense> expenses = {
+        {"Food", 1500.50},
+        {"Transport", 750.00},
+        {"Entertainment", 1200.75}
+    };
+
+    generateReport(expenses);
+    return 0;
+}
 
