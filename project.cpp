@@ -4,16 +4,9 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <cmath>
 
 using namespace std;
-
-
-
-
-
-   
-
-
 
 // Transaction structure to hold each record
 struct Transaction {
@@ -157,6 +150,16 @@ void showMenu() {
     cout << "Enter choice: ";
 }
 
+// ------------------ BALANCE CALCULATION ------------------
+// Calculates the total balance from all transactions
+double calculateBalance(const std::vector<Transaction> &transactions) {
+    double balance = 0.0;
+    for (const auto &txn : transactions) {
+        balance += txn.amount;
+    }
+    return balance;
+}
+
 int main() {
     Ledger ledger("transactions.csv");
     int choice;
@@ -204,6 +207,15 @@ int main() {
         }
 
     } while (choice != 5);
+
+// ------------------ TEMPORARY TEST FOR BUG FIX ------------------
+std::vector<Transaction> testTxns = {
+    {"2025-08-13", "Opening balance", 1000.00},
+    {"2025-08-14", "Purchase", -250.50},
+    {"2025-08-15", "Deposit", 500.00}
+};
+
+std::cout << "\n[DEBUG] Test Balance: ₹" << calculateBalance(testTxns) << "\n";
 
     return 0;
 }
